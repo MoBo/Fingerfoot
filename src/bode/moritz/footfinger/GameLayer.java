@@ -116,7 +116,7 @@ public class GameLayer extends CCColorLayer {
 			
 			if(yPosition>this.lastUpperPoint){
 				this.lastUpperPoint = yPosition;
-			}else{
+			}else if(lastUpperPoint-yPosition>20f){
 				this.timeStamp = System.currentTimeMillis();
 			}
 			
@@ -144,9 +144,10 @@ public class GameLayer extends CCColorLayer {
 				float time = (float)(System.currentTimeMillis() - this.timeStamp)/1000f;
 				
 				// check if it was a tap?
-				if(time>0.1f){
+				//if(time>0.5f){
 					calculateShoot(event,time);
-				}
+				//}
+				
 				
 				
 				
@@ -172,13 +173,13 @@ public class GameLayer extends CCColorLayer {
 		float firstX = this.savedMotionEvents.getHistoricalX(0);
 		float firstY = winSize.getHeight()-this.savedMotionEvents.getHistoricalY(0);
 		
-		Log.e("length", firstX+" " + lastX);
-		Log.e("length", firstY+" " + lastY);
+		//Log.e("length", firstX+" " + lastX);
+		//Log.e("length", firstY+" " + lastY);
 		
 		float a = lastY - firstY;
 		float b = Math.abs(firstX-lastX);
 		//return c
-		Log.e("length", Math.sqrt(a*a+b*b)+"");
+		//Log.e("length", Math.sqrt(a*a+b*b)+"");
 		return (float) Math.sqrt(a*a+b*b);
 	}
 
@@ -232,20 +233,24 @@ public class GameLayer extends CCColorLayer {
 			//angle = 90f-(float) Math.toDegrees(Math.asin(b/c));
 			angle = (float) Math.acos(b/c);
 			//calculate big triangle to get point frisbee should move to
-			Log.e("ab", "a " + a + " b" + b);
+			//Log.e("ab", "a " + a + " b" + b);
 			b = 10f+startXPosition;
 			a = (float) (Math.tan(angle)*b);
 			c = (float) Math.sqrt(a*a+b*b);
 			moveTo = CGPoint.ccp(-10f, startYPosition+a);
 		}
+		Log.e("length",c+" " +moveTo.y + " " + moveTo.x);
+		// check if not flying backward
+		if(ball.getPosition().y<moveTo.y){
+			float animationTime = c/speed;
+			
+			CCMoveTo actionMove = CCMoveTo.action(animationTime, moveTo);
+			CCCallFuncN actionMoveDone = CCCallFuncN.action(this, "spriteMoveFinished");
+			CCSequence actions = CCSequence.actions(actionMove, actionMoveDone);
+			
+			ball.runAction(actions);
+		}
 		
-		float animationTime = c/speed;
-		
-		CCMoveTo actionMove = CCMoveTo.action(animationTime, moveTo);
-		CCCallFuncN actionMoveDone = CCCallFuncN.action(this, "spriteMoveFinished");
-		CCSequence actions = CCSequence.actions(actionMove, actionMoveDone);
-		
-		ball.runAction(actions);
 	}
 	
 	public void update(float dt)
@@ -253,7 +258,7 @@ public class GameLayer extends CCColorLayer {
 		// check if frisbee out of visible position
 		float yPosition = this.ball.getPosition().y;
 		float xPosition = this.ball.getPosition().x;
-		if(yPosition>OUT_OF_BOUNDS_TOP||xPosition<=OUT_OF_BOUNDS_LEFT||xPosition>=OUT_OF_BOUNDS_RIGHT){
+		if(yPosition>OUT_OF_BOUNDS_TOP||xPosition<=OUT_OF_BOUNDS_LEFT||xPosition>=OUT_OF_BOUNDS_RIGHT||Float.isNaN(xPosition)){
 			this.ball.stopAllActions();
 			this.resetFrisbee();
 		}
