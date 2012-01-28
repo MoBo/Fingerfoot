@@ -38,7 +38,7 @@ public class FootFingerActivity extends Activity {
         CCDirector.sharedDirector().setAnimationInterval(1.0f / 60.0f);
         
         
-        CCScene scene = MainMenuLayer.scene();
+        CCScene scene = IndexPageLayer.scene();
         CCDirector.sharedDirector().runWithScene(scene);
     }
     
