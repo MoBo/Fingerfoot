@@ -1,5 +1,8 @@
 package bode.moritz.footfinger;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import org.cocos2d.layers.CCColorLayer;
 import org.cocos2d.layers.CCLayer;
 import org.cocos2d.layers.CCScene;
@@ -11,11 +14,16 @@ import org.cocos2d.nodes.CCSprite;
 import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor4B;
 
+import android.util.Log;
+import bode.moritz.footfinger.network.NetworkControllerClient;
+
 
 
 public class ShooterConnectLayer extends CCColorLayer {
 
-
+	private final String IP_TO_CONNECT_TO = "134.102.25.228";
+	private final int PORT_TO_CONNECT_TO = 8080;
+	private NetworkControllerClient networClient;
 	protected ShooterConnectLayer(ccColor4B color) {
 		super(color);
 		
@@ -30,7 +38,29 @@ public class ShooterConnectLayer extends CCColorLayer {
 	}
 
 	 public void connectClick(Object sender){
-		 
+		 try {
+			this.networClient = new NetworkControllerClient();
+			this.networClient.connectSocket(this.IP_TO_CONNECT_TO, this.PORT_TO_CONNECT_TO);
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						Log.e("Server Response", networClient.transmitAndGetResponse("moin moin"));
+					} catch (IOException e) {
+						// do nothing
+					}
+					
+				}
+			}).start();
+			
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	 }
 	
 	
