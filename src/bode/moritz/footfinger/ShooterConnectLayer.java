@@ -41,19 +41,7 @@ public class ShooterConnectLayer extends CCColorLayer {
 		 try {
 			this.networClient = new NetworkControllerClient();
 			this.networClient.connectSocket(this.IP_TO_CONNECT_TO, this.PORT_TO_CONNECT_TO);
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					try {
-						Log.e("Server Response", networClient.transmitAndGetResponse("moin moin"));
-					} catch (IOException e) {
-						// do nothing
-					}
-					
-				}
-			}).start();
-			
+			CCDirector.sharedDirector().replaceScene(ShooterLayer.scene(networClient));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
