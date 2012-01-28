@@ -46,7 +46,7 @@ public class ShooterLayer extends CCColorLayer {
 				public void run() {
 					try {
 						Log.e("Server Response", networClient
-								.transmitAndGetResponse(""+(int)(Math.random()*100d)));
+								.transmitAndGetResponse(""+(int)(Math.round(Math.random()*6d))));
 					} catch (IOException e) {
 						// do nothing
 					}
