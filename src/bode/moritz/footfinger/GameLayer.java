@@ -30,6 +30,13 @@ public class GameLayer extends CCColorLayer {
 
 
 	private static final int ROTATE_FRISBEE = 1;
+	private enum ACCEL_STATE{
+		left,right,up,down,middleCenter
+	}
+	
+	private enum DRAW_DIRECTION{
+		left,middle,right
+	}
 	private CCSprite background;
 	private CCSprite ball;
 	private boolean dragAndDrop = false;
@@ -43,13 +50,19 @@ public class GameLayer extends CCColorLayer {
 	private float OUT_OF_BOUNDS_RIGHT;
 	private CGPoint frisbeeStartPosition;
 	private Vibrator vibrator;
+	private float precisionLow = 0.2f;
+	private float precisionHigh = 0.2f;
+	private float oldAccelX;
+	private float oldAccelY;
+	private ACCEL_STATE lastAccelStateLeftRight;
+	private ACCEL_STATE lastAccelStateTopDown;
 	
 	protected GameLayer(ccColor4B color, Vibrator v) {
 		super(color);
 		
 		vibrator = v;
 		this.setIsTouchEnabled(true);
-		
+		this.setIsAccelerometerEnabled(true);
 		
 		winSize = CCDirector.sharedDirector().displaySize();
 		frisbeeStartPosition = CGPoint.ccp(winSize.getWidth()/2f, 100f);
@@ -210,14 +223,29 @@ public class GameLayer extends CCColorLayer {
 		float c = 0f;
 		float a = 0f;
 		float angle = 0f;
+		
+		DRAW_DIRECTION drawDirection; 
+		
 		if(b>0){
 			//calculate small triangle to get angle
-			Log.e("direction", "rechts");
+			//Log.e("direction", "rechts");
 			
 			a= lastYPosition - startYPosition;
 			c = (float) Math.sqrt(a*a+b*b);
 			//angle = 90f-(float) Math.toDegrees(Math.asin(b/c));
 			angle = (float) Math.acos(b/c);
+			
+			//Set the direction
+			
+			float angleDegree = (float) Math.toDegrees(angle);
+			
+			if(angleDegree>75){
+				drawDirection = DRAW_DIRECTION.middle;
+			}else{
+				drawDirection = DRAW_DIRECTION.right;
+			}
+			
+			
 			//calculate big triangle to get point frisbee should move to
 			Log.e("ab", "a " + a + " b" + b);
 			b = winSize.getWidth()+100f-startXPosition;
@@ -226,12 +254,26 @@ public class GameLayer extends CCColorLayer {
 			moveTo = CGPoint.ccp(winSize.getWidth()+100f, startYPosition+a);
 		}else{
 			//calculate small triangle to get angle
-			Log.e("direction", "links");
+			//Log.e("direction", "links");
 			a= lastYPosition - startYPosition;
 			b= b*-1;
 			c = (float) Math.sqrt(a*a+b*b);
 			//angle = 90f-(float) Math.toDegrees(Math.asin(b/c));
 			angle = (float) Math.acos(b/c);
+			
+			
+			//Set the direction
+			
+			float angleDegree = (float) Math.toDegrees(angle);
+			
+			if(angleDegree>75){
+				drawDirection = DRAW_DIRECTION.middle;
+			}else{
+				drawDirection = DRAW_DIRECTION.left;
+			}
+			
+			
+			
 			//calculate big triangle to get point frisbee should move to
 			//Log.e("ab", "a " + a + " b" + b);
 			b = 10f+startXPosition;
@@ -239,7 +281,11 @@ public class GameLayer extends CCColorLayer {
 			c = (float) Math.sqrt(a*a+b*b);
 			moveTo = CGPoint.ccp(-10f, startYPosition+a);
 		}
+		
+		calculateHitBoxes(drawDirection);
+		
 		Log.e("length",c+" " +moveTo.y + " " + moveTo.x);
+		//Log.e("length",c+" " +moveTo.y + " " + moveTo.x);
 		// check if not flying backward
 		if(ball.getPosition().y<moveTo.y){
 			float animationTime = c/speed;
@@ -253,6 +299,30 @@ public class GameLayer extends CCColorLayer {
 		
 	}
 	
+	private void calculateHitBoxes(DRAW_DIRECTION drawDirection) {
+		//|4|5|6|
+		//|1|2|3|
+		int hitBox = 0;
+		if(lastAccelStateTopDown==ACCEL_STATE.up){
+			if(drawDirection==DRAW_DIRECTION.left){
+				hitBox = 4;
+			}else if(drawDirection==DRAW_DIRECTION.middle){
+				hitBox = 5;
+			}else if(drawDirection==DRAW_DIRECTION.right){
+				hitBox = 6;
+			}
+		}else if(lastAccelStateTopDown==ACCEL_STATE.down){
+			if(drawDirection==DRAW_DIRECTION.left){
+				hitBox = 1;
+			}else if(drawDirection==DRAW_DIRECTION.middle){
+				hitBox = 2;
+			}else if(drawDirection==DRAW_DIRECTION.right){
+				hitBox = 3;
+			}
+		}
+		Log.e("HitBox", ""+hitBox);
+	}
+
 	public void update(float dt)
 	{
 		// check if frisbee out of visible position
@@ -281,6 +351,31 @@ public class GameLayer extends CCColorLayer {
 	
 	public void rotateFrisbeeFinished(Object sender){
 		this.rotateFrisbee();
+	}
+	
+	@Override
+	public void ccAccelerometerChanged(float accelX, float accelY, float accelZ) {
+		// Not needed at moment because of Kriesensitzung:D
+//		if (Math.abs(this.oldAccelX - accelX) > precisionLow) {
+//			if (accelX > 4){
+//				this.lastAccelStateLeftRight = ACCEL_STATE.left;
+//			}else if (accelX > -4){
+//				this.lastAccelStateLeftRight = ACCEL_STATE.middleCenter;
+//			}else if (accelX <= -4){
+//				this.lastAccelStateLeftRight = ACCEL_STATE.right;
+//			}
+//		}
+		if (Math.abs(this.oldAccelY - accelY) > precisionHigh) {
+			if (accelY > 4){
+				this.lastAccelStateTopDown = ACCEL_STATE.up;
+			}else if (accelY > -4){
+				//Log.e("Accel","mitte");
+			}else if (accelY <= -4){
+				this.lastAccelStateTopDown = ACCEL_STATE.down;
+			}
+		}
+		this.oldAccelX = accelX;
+		this.oldAccelY = accelY;
 	}
 	
 	private class VibrateTask implements Runnable {
