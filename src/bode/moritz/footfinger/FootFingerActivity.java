@@ -36,7 +36,7 @@ public class FootFingerActivity extends Activity {
         CCDirector.sharedDirector().setDisplayFPS(true);
      
         CCDirector.sharedDirector().setAnimationInterval(1.0f / 60.0f);
-        
+        CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
         
         CCScene scene = GameLayer.scene();
         CCDirector.sharedDirector().runWithScene(scene);
