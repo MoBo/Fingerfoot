@@ -15,19 +15,19 @@ public class IndexPageLayer extends CCColorLayer {
 
 	protected IndexPageLayer(ccColor4B color) {
 		super(color);
-		this.setIsTouchEnabled(true);
+		this.setIsTouchEnabled(true);		
 		
-		
-		CCSprite background = CCSprite.sprite("backgroundIn.png");
-		background.setScale(0.5f);
+		CCSprite background = CCSprite.sprite("intro/intro_bg.png");
+		float winSize = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0);
+		background.setScale(winSize);
 		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
 		
 		addChild(background);
 		
-		CCMenuItem startItem = CCMenuItemImage.item("play_btn.png", "play_btn.png", this, "startClick");
-		startItem.setScale(0.5f);
-		CCMenuItem helpItem = CCMenuItemImage.item("how_to_btn.png", "how_to_btn.png", this, "helpClick");
-		helpItem.setScale(0.5f);
+		CCMenuItem startItem = CCMenuItemImage.item("intro/start_btn.png", "intro/start_btn_p.png", this, "startClick");
+		startItem.setScale(winSize);
+		CCMenuItem helpItem = CCMenuItemImage.item("intro/how_btn.png", "intro/how_btn_p.png", this, "helpClick");
+		helpItem.setScale(winSize);
 		CCMenu menu = CCMenu.menu(startItem, helpItem);
         menu.alignItemsVertically(0);
         
@@ -39,7 +39,7 @@ public class IndexPageLayer extends CCColorLayer {
 	}
 	
 	public void helpClick(Object sender){
-		
+		CCDirector.sharedDirector().replaceScene(HelpPageLayer.scene());
 	}
 
 	public static CCScene scene()

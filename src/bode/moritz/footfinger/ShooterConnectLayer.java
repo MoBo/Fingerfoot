@@ -30,7 +30,7 @@ public class ShooterConnectLayer extends CCColorLayer {
 		this.setIsTouchEnabled(true);
 		
 		
-		CCMenuItem keeperItem = CCMenuItemImage.item("connect.png", "connect.png", this, "connectClick");
+		CCMenuItem keeperItem = CCMenuItemImage.item("enterip/shooter.png", "enterip/shooter_p.png", this, "connectClick");
 		CCMenu menu = CCMenu.menu(keeperItem, keeperItem);
         menu.alignItemsVertically(300f);
         
