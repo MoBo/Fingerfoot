@@ -5,7 +5,9 @@ import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.opengl.CCGLSurfaceView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -38,7 +40,8 @@ public class FootFingerActivity extends Activity {
         CCDirector.sharedDirector().setAnimationInterval(1.0f / 60.0f);
         CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
         
-        CCScene scene = GameLayer.scene();
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        CCScene scene = GameLayer.scene(v);
         CCDirector.sharedDirector().runWithScene(scene);
     }
     

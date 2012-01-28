@@ -3,6 +3,7 @@ package bode.moritz.footfinger;
 import org.cocos2d.actions.instant.CCCallFuncN;
 import org.cocos2d.actions.interval.CCBezierTo;
 import org.cocos2d.actions.interval.CCMoveTo;
+import org.cocos2d.actions.interval.CCRotateTo;
 import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.layers.CCColorLayer;
 import org.cocos2d.layers.CCLayer;
@@ -16,7 +17,10 @@ import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor4B;
 import org.cocos2d.utils.javolution.MathLib;
 
+import android.content.Context;
 import android.graphics.Path;
+import android.os.AsyncTask;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -25,49 +29,77 @@ import android.view.MotionEvent;
 public class GameLayer extends CCColorLayer {
 
 
+	private static final int ROTATE_FRISBEE = 1;
 	private CCSprite background;
 	private CCSprite ball;
-	private boolean dragAndDrop = true;
+	private boolean dragAndDrop = false;
 	private CGSize winSize ;
 	private long timeStamp;
 	private float lastUpperPoint;
 	private CGPoint startpoint;
 	private MotionEvent savedMotionEvents;
-	private float OUT_OF_BOUNDS;
+	private float OUT_OF_BOUNDS_TOP;
+	private float OUT_OF_BOUNDS_LEFT;
+	private float OUT_OF_BOUNDS_RIGHT;
 	private CGPoint frisbeeStartPosition;
+	private Vibrator vibrator;
 	
-	
-	protected GameLayer(ccColor4B color) {
+	protected GameLayer(ccColor4B color, Vibrator v) {
 		super(color);
 		
-		
+		vibrator = v;
 		this.setIsTouchEnabled(true);
 		
 		
 		winSize = CCDirector.sharedDirector().displaySize();
 		frisbeeStartPosition = CGPoint.ccp(winSize.getWidth()/2f, 100f);
-		OUT_OF_BOUNDS = winSize.getHeight()+100f;
+		OUT_OF_BOUNDS_TOP = winSize.getHeight()+100f;
+		OUT_OF_BOUNDS_LEFT = -100f;
+		OUT_OF_BOUNDS_RIGHT = winSize.getWidth()+100f;
 		
-		background = CCSprite.sprite("background.png");
+		
+		background = CCSprite.sprite("grass.jpg");
 		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
 		background.setPosition(CGPoint.ccp(0, 0));
-		background.setScale(0.5f);
+		//background.setScale(0.5f);
 		
-		ball = CCSprite.sprite("stick.png");
-		ball.setPosition(CGPoint.ccp(winSize.getWidth()/2f, 100f));
+		ball = CCSprite.sprite("ball.png");
+		
 		
 		addChild(background);
 		
 		addChild(ball);
+		this.resetFrisbee();
 		this.schedule("update");
 	}
 	
+	private void resetFrisbee() {
+		this.ball.setPosition(CGPoint.ccp(winSize.getWidth()/2f, 100f));
+		this.rotateFrisbee();
+	}
+
+	private void rotateFrisbee() {
+		float angle = this.ball.getRotation()+90f;
+		float time;
+		if(dragAndDrop){
+			time = 0.2f;
+		}else{
+			time = 0.5f;
+		}
+		
+		CCRotateTo actionRotate = CCRotateTo.action(time,angle);
+		CCCallFuncN actionMoveDone = CCCallFuncN.action(this, "rotateFrisbeeFinished");
+		CCSequence actions = CCSequence.actions(actionRotate, actionMoveDone);
+		ball.runAction(actions);
+	}
+
 	@Override
 	public boolean ccTouchesBegan(MotionEvent event) {
 		//check if touch hits ball
 		if(CGRect.containsPoint(ball.getBoundingBox(), CGPoint.ccp(event.getRawX(),winSize.getHeight()-event.getRawY()))){
 			this.savedMotionEvents = MotionEvent.obtain(event);
 			dragAndDrop  = true;
+			new Thread(new VibrateTask()).start();
 			this.timeStamp = System.currentTimeMillis();
 			this.lastUpperPoint = winSize.getHeight()-event.getRawY();
 			this.startpoint = CGPoint.ccp(event.getRawX(), winSize.getHeight()-event.getRawY());
@@ -84,6 +116,8 @@ public class GameLayer extends CCColorLayer {
 			
 			if(yPosition>this.lastUpperPoint){
 				this.lastUpperPoint = yPosition;
+			}else{
+				this.timeStamp = System.currentTimeMillis();
 			}
 			
 			this.ball.setPosition(CGPoint.ccp(event.getX(),winSize.getHeight()-event.getRawY()));
@@ -107,7 +141,13 @@ public class GameLayer extends CCColorLayer {
 				lastUpperPoint = yPosition;
 				
 				//Log.e("animationTime", animationTime+" ");
-				calculateShoot(event);
+				float time = (float)(System.currentTimeMillis() - this.timeStamp)/1000f;
+				
+				// check if it was a tap?
+				if(time>0.1f){
+					calculateShoot(event,time);
+				}
+				
 				
 				
 //				CCBezierConfig config = new CCBezierConfig();
@@ -142,7 +182,7 @@ public class GameLayer extends CCColorLayer {
 		return (float) Math.sqrt(a*a+b*b);
 	}
 
-	private void calculateShoot(MotionEvent lastEvent) {
+	private void calculateShoot(MotionEvent lastEvent,float time) {
 		MotionEvent event = savedMotionEvents;
 		float lastXPosition = lastEvent.getX();
 		float lastYPosition = winSize.getHeight() - lastEvent.getY();
@@ -152,7 +192,6 @@ public class GameLayer extends CCColorLayer {
 		CGPoint moveTo = null;
 		
 		
-		float time = (float)(System.currentTimeMillis() - this.timeStamp)/1000f;
 		float length = this.calculateLength(event);
 		float speed = length/time;
 		
@@ -211,18 +250,19 @@ public class GameLayer extends CCColorLayer {
 	
 	public void update(float dt)
 	{
-		float yPosition = this.ball.getPosition().y-winSize.getHeight();
-		
-		if(yPosition>OUT_OF_BOUNDS){
+		// check if frisbee out of visible position
+		float yPosition = this.ball.getPosition().y;
+		float xPosition = this.ball.getPosition().x;
+		if(yPosition>OUT_OF_BOUNDS_TOP||xPosition<=OUT_OF_BOUNDS_LEFT||xPosition>=OUT_OF_BOUNDS_RIGHT){
 			this.ball.stopAllActions();
-			this.ball.setPosition(frisbeeStartPosition);
+			this.resetFrisbee();
 		}
 	}
 	
-	public static CCScene scene()
+	public static CCScene scene(Vibrator v)
 	{
 	    CCScene scene = CCScene.node();
-	    CCLayer layer = new GameLayer(ccColor4B.ccc4(255, 255, 255, 255));
+	    CCLayer layer = new GameLayer(ccColor4B.ccc4(255, 255, 255, 255),v);
 	 
 	    scene.addChild(layer);
 	 
@@ -231,6 +271,27 @@ public class GameLayer extends CCColorLayer {
 
 	public void spriteMoveFinished(Object sender)
 	{
-		this.ball.setPosition(this.frisbeeStartPosition );
+		this.resetFrisbee();
 	}
+	
+	public void rotateFrisbeeFinished(Object sender){
+		this.rotateFrisbee();
+	}
+	
+	private class VibrateTask implements Runnable {
+	    
+	 
+
+		@Override
+		public void run() {
+			 while (dragAndDrop) {
+					vibrator.vibrate(200);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						//doNothing
+					}
+				}
+		         vibrator.cancel();
+		}}
 }
