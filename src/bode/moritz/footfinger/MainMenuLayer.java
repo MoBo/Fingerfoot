@@ -33,7 +33,13 @@ public class MainMenuLayer extends CCColorLayer {
 	public void keeperClick(Object sender){
 //		boolean landscape = CCDirector.sharedDirector().getLandscape();
 //      CCDirector.sharedDirector().setLandscape(!landscape);
-//		CCDirector.sharedDirector().replaceScene(GameLayer.scene(null));
+		boolean landscape = CCDirector.sharedDirector().getLandscape();
+		if(!landscape){
+			CCDirector.sharedDirector().setLandscape(true);
+		}
+        
+		CCDirector.sharedDirector().replaceScene(GoalKeeperLayer.scene());
+		//CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationLandscapeLeft);
 	}
 	
 	public void shooterClick(Object sender){
@@ -50,5 +56,12 @@ public class MainMenuLayer extends CCColorLayer {
 	 
 	    return scene;
 	}
+
+	@Override
+	public void onEnterTransitionDidFinish() {
+		// TODO Auto-generated method stub
+		super.onEnterTransitionDidFinish();
+	}
+	
 
 }

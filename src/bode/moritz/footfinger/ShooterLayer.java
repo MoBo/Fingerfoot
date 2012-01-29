@@ -77,13 +77,14 @@ public class ShooterLayer extends CCColorLayer {
 		OUT_OF_BOUNDS_LEFT = -100f;
 		OUT_OF_BOUNDS_RIGHT = winSize.getWidth() + 100f;
 
-		background = CCSprite.sprite("grass.jpg");
+		background = CCSprite.sprite("background.png");
+		background.setScale(0.5f);
 		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
 		background.setPosition(CGPoint.ccp(0, 0));
 		// background.setScale(0.5f);
 
 		ball = CCSprite.sprite("ball.png");
-
+		ball.setScale(0.5f);
 		addChild(background);
 
 		addChild(ball);
@@ -372,10 +373,13 @@ public class ShooterLayer extends CCColorLayer {
 				@Override
 				public void run() {
 					try {
+						Thread.sleep(500);
 						networkClient.transmitAndGetResponse(lastHitBox + "");
 
 						resetFrisbee();
 					} catch (IOException e) {
+						// do nothing
+					} catch (InterruptedException e) {
 						// do nothing
 					}
 

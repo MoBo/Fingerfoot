@@ -10,6 +10,7 @@ import bode.moritz.footfinger.network.NetworkControllerClient;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.Window;
@@ -44,14 +45,13 @@ public class FootFingerActivity extends Activity {
         CCDirector.sharedDirector().setDisplayFPS(true);
      
         CCDirector.sharedDirector().setAnimationInterval(1.0f / 60.0f);
-        //CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
-        CCDirector.sharedDirector().setLandscape(false);
+        CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
       
         
         CCScene scene = IndexPageLayer.scene();
 
-       vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        //CCScene scene = GameLayer.scene(v);
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        //CCScene scene = ShooterLayer.scene(vibrator);
 
         CCDirector.sharedDirector().runWithScene(scene);
     }
