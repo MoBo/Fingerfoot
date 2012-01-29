@@ -25,18 +25,21 @@ public class MainMenuLayer extends CCColorLayer {
 		float winSize = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0);
 		background.setScale(winSize);
 		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
+		addChild(background);
 		
 		
 		CCSprite text = CCSprite.sprite("selection/text.png");
-		text.setScale(0.5f);
-		text.setAnchorPoint(CGPoint.ccp(0f, 0f));
+		text.setScale(winSize);
+		text.setAnchorPoint(CGPoint.ccp(CCDirector.sharedDirector().displaySize().getWidth()/2, 60.0f));
+		addChild(text);
 		
 		CCMenuItem keeperItem = CCMenuItemImage.item("selection/keeper_btn.png", "selection/keeper_btn_p.png", this, "keeperClick");
 		CCMenuItem shooterItem = CCMenuItemImage.item("selection/shooter_btn.png", "selection/shooter_btn_p.png", this, "shooterClick");
-		keeperItem.setScale(0.5f);
-		shooterItem.setScale(0.5f);
+		keeperItem.setScale(winSize);
+		shooterItem.setScale(winSize);
 		CCMenu menu = CCMenu.menu(keeperItem, shooterItem);
-        menu.alignItemsVertically(300f);
+		menu.setAnchorPoint(CCDirector.sharedDirector().displaySize().getWidth()/2, 400.0f);
+        menu.alignItemsVertically();
         
         addChild(menu);
 	}
