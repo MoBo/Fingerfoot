@@ -1,5 +1,9 @@
 package bode.moritz.footfinger;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 import org.cocos2d.layers.CCColorLayer;
 import org.cocos2d.layers.CCLayer;
 import org.cocos2d.layers.CCScene;
@@ -15,6 +19,8 @@ import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor3B;
 import org.cocos2d.types.ccColor4B;
+
+import android.util.Log;
 
 public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 
@@ -62,6 +68,33 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 		
 		addChild(menu);
 		addChild(information);
+		
+		
+		new Thread(new Runnable() {
+			
+			private ServerSocket server;
+
+			@Override
+			public void run() {
+				try {
+					server = new ServerSocket(8080);
+				} catch (IOException e) {
+					Log.e("print", "Could not bind Server...");
+				}
+
+				Socket client;
+
+				
+				try {
+					client = server.accept();
+					//Client connected
+					CCDirector.sharedDirector().replaceScene(GoalKeeperLayer.scene(client));
+					
+				} catch (IOException e) {
+					// do nothing
+				}
+			}
+		}).start();
 	}
 	
 	public void prevClick(Object sender){
