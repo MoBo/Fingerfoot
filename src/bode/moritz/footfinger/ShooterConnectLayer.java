@@ -11,6 +11,7 @@ import org.cocos2d.menus.CCMenuItem;
 import org.cocos2d.menus.CCMenuItemImage;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.sound.SoundEngine;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor4B;
@@ -37,6 +38,12 @@ public class ShooterConnectLayer extends CCColorLayer {
 		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
 		
 		addChild(background);
+		
+		CCSprite text = CCSprite.sprite("selection/text_shooter.png");
+		//text.setScale(winScaleWidthFactor);
+		text.setPosition(CGPoint.ccp(CCDirector.sharedDirector().displaySize().getWidth()/2, 650.0f));
+		addChild(text);
+		
 		
 		CCMenuItem shooterItem = CCMenuItemImage.item("enterip/shooter.png", "enterip/shooter_p.png", this, "connectClick");
 		CCMenuItem backItem = CCMenuItemImage.item("selection/prev_btn.png", "selection/prev_btn_p.png", this, "prevClick");

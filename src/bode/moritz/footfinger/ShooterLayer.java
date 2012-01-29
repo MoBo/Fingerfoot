@@ -12,6 +12,7 @@ import org.cocos2d.layers.CCLayer;
 import org.cocos2d.layers.CCScene;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.sound.SoundEngine;
 import org.cocos2d.types.CCBezierConfig;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGRect;
@@ -76,9 +77,10 @@ public class ShooterLayer extends CCColorLayer {
 		OUT_OF_BOUNDS_TOP = winSize.getHeight() + 100f;
 		OUT_OF_BOUNDS_LEFT = -100f;
 		OUT_OF_BOUNDS_RIGHT = winSize.getWidth() + 100f;
-
+		
+		float winScaleWidthFactor = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0f);
 		background = CCSprite.sprite("background.png");
-		background.setScale(0.5f);
+		background.setScale(winScaleWidthFactor);
 		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
 		background.setPosition(CGPoint.ccp(0, 0));
 		// background.setScale(0.5f);
@@ -88,6 +90,7 @@ public class ShooterLayer extends CCColorLayer {
 		addChild(background);
 
 		addChild(ball);
+		
 		this.resetFrisbee();
 		this.schedule("update");
 	}
@@ -97,6 +100,7 @@ public class ShooterLayer extends CCColorLayer {
 		this.ball.setPosition(CGPoint.ccp(winSize.getWidth() / 2f, 100f));
 		this.shotWasSended = false;
 		this.rotateFrisbee();
+		startSlowSound();
 	}
 
 	private void rotateFrisbee() {
@@ -125,12 +129,39 @@ public class ShooterLayer extends CCColorLayer {
 			this.savedMotionEvents = MotionEvent.obtain(event);
 			dragAndDrop = true;
 			new Thread(new VibrateTask()).start();
+			
+			this.startFasterSound();
+			
 			this.timeStamp = System.currentTimeMillis();
 			this.lastUpperPoint = winSize.getHeight() - event.getRawY();
 			this.startpoint = CGPoint.ccp(event.getRawX(), winSize.getHeight()
 					- event.getRawY());
 		}
 		return super.ccTouchesBegan(event);
+	}
+
+	private void startFasterSound() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				SoundEngine.sharedEngine().pauseSound();
+				FootFingerActivity.playSound(R.raw.frisbe_fast, true);
+			}
+		}).start();
+		
+	}
+	
+	private void startSlowSound() {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				SoundEngine.sharedEngine().pauseSound();
+				FootFingerActivity.playSound(R.raw.frisbe_slow, true);
+			}
+		}).start();
+		
 	}
 
 	@Override
@@ -186,7 +217,7 @@ public class ShooterLayer extends CCColorLayer {
 				// config);
 
 			}
-
+			SoundEngine.sharedEngine().pauseSound();
 			dragAndDrop = false;
 		}
 		return super.ccTouchesEnded(event);
@@ -303,7 +334,8 @@ public class ShooterLayer extends CCColorLayer {
 			CCCallFuncN actionMoveDone = CCCallFuncN.action(this,
 					"spriteMoveFinished");
 			CCSequence actions = CCSequence.actions(actionMove, actionMoveDone);
-
+			FootFingerActivity.playEffect(R.raw.swirl);
+			
 			ball.runAction(actions);
 		}
 
