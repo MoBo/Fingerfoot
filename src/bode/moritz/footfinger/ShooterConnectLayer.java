@@ -39,13 +39,13 @@ public class ShooterConnectLayer extends CCColorLayer {
 		
 		addChild(background);
 		
-		CCSprite text = CCSprite.sprite("selection/text_shooter.png");
-		//text.setScale(winScaleWidthFactor);
+		CCSprite text = CCSprite.sprite("selection/shooter_txt.png");
+		text.setScale(winScaleWidthFactor);
 		text.setPosition(CGPoint.ccp(CCDirector.sharedDirector().displaySize().getWidth()/2, 650.0f));
 		addChild(text);
 		
 		
-		CCMenuItem shooterItem = CCMenuItemImage.item("enterip/shooter.png", "enterip/shooter_p.png", this, "connectClick");
+		CCMenuItem shooterItem = CCMenuItemImage.item("enterip/shooter_btn.png", "enterip/shooter_btn_p.png", this, "connectClick");
 		CCMenuItem backItem = CCMenuItemImage.item("selection/prev_btn.png", "selection/prev_btn_p.png", this, "prevClick");
 		backItem.setScale(winScaleWidthFactor);
 		shooterItem.setScale(winScaleWidthFactor);

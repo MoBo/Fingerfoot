@@ -1,6 +1,7 @@
 package bode.moritz.footfinger;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -35,6 +36,11 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 //		title.setPosition(CGPoint.ccp(winSize.getWidth()/2f, winSize.getHeight()/2f));
 //		title.setColor(ccColor3B.ccBLACK);
 //		
+		
+			
+		
+		
+		
 		CCLabel information = CCLabel.makeLabel("127.0.0.1", "DroidSans", 30f);
 		information.setPosition(CGPoint.ccp(winSize.getWidth()/2f-20f, winSize.getHeight()/2f-20f));
 		information.setColor(ccColor3B.ccBLACK);
@@ -50,7 +56,10 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 		
 		addChild(background);
 		
-		
+		CCSprite text = CCSprite.sprite("selection/keeper_txt.png");
+		text.setScale(winScaleWidthFactor);
+		text.setPosition(CGPoint.ccp(CCDirector.sharedDirector().displaySize().getWidth()/2, 650.0f));
+		addChild(text);
 		
 		CCSprite keeperItem = CCSprite.sprite("enterip/keeper.png");
 		keeperItem.setScale(winScaleWidthFactor);
@@ -78,6 +87,7 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 			public void run() {
 				try {
 					server = new ServerSocket(8080);
+					//Log.e("IP of my Android := ",server.g.toString());
 				} catch (IOException e) {
 					Log.e("print", "Could not bind Server...");
 				}

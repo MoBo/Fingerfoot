@@ -14,6 +14,7 @@ import org.cocos2d.layers.CCLayer;
 import org.cocos2d.layers.CCScene;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.sound.SoundEngine;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor4B;
@@ -50,6 +51,7 @@ public class GoalKeeperLayer extends CCColorLayer {
 
 	protected GoalKeeperLayer(ccColor4B color, Socket client) {
 		super(color);
+		SoundEngine.sharedEngine().pauseSound();
 		this.client = client;
 		
 		this.setIsAccelerometerEnabled(true);

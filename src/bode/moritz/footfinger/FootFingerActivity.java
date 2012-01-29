@@ -1,6 +1,7 @@
 package bode.moritz.footfinger;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.cocos2d.layers.CCScene;
 import org.cocos2d.nodes.CCDirector;
@@ -9,6 +10,8 @@ import org.cocos2d.sound.SoundEngine;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.Window;
@@ -17,6 +20,7 @@ import bode.moritz.footfinger.network.NetworkControllerClient;
 
 public class FootFingerActivity extends Activity {
     private CCGLSurfaceView _glSurfaceView;
+	private static WifiManager wim;
 	private static Vibrator vibrator;
 	private static Context context;
 
@@ -49,7 +53,9 @@ public class FootFingerActivity extends Activity {
         SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.background_music);
         SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.frisbe_slow);
         SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.frisbe_fast);
-        SoundEngine.sharedEngine().preloadEffect(context, R.raw.swirl);
+        SoundEngine.sharedEngine().preloadEffect(getApplicationContext(), R.raw.swirl);
+        SoundEngine.sharedEngine().preloadEffect(getApplicationContext(), R.raw.missed);
+        SoundEngine.sharedEngine().preloadEffect(getApplicationContext(), R.raw.success);
         
         SoundEngine.sharedEngine().playSound(getApplicationContext(), R.raw.background_music, true);
         
@@ -57,6 +63,7 @@ public class FootFingerActivity extends Activity {
         CCScene scene = IndexPageLayer.scene();
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        wim= (WifiManager) getSystemService(WIFI_SERVICE);
         //CCScene scene = ShooterLayer.scene(vibrator);
         
         CCDirector.sharedDirector().runWithScene(scene);
@@ -94,6 +101,14 @@ public class FootFingerActivity extends Activity {
 
 	public static Vibrator getVibrator() {
 		return vibrator;
+	}
+	
+	public static String getIPAdresse(){
+		 
+
+		 List<WifiConfiguration> l=  wim.getConfiguredNetworks(); 
+		// WifiConfiguration wc=l.get(0); 
+		 return wim.getConnectionInfo().getIpAddress()+"";
 	}
 	
 	public static void playSound(int id, boolean loop){
