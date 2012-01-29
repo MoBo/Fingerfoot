@@ -1,8 +1,12 @@
 package bode.moritz.footfinger;
 
+import java.io.IOException;
+
 import org.cocos2d.layers.CCScene;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.opengl.CCGLSurfaceView;
+
+import bode.moritz.footfinger.network.NetworkControllerClient;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +17,8 @@ import android.view.WindowManager;
 
 public class FootFingerActivity extends Activity {
     private CCGLSurfaceView _glSurfaceView;
+	private static Vibrator vibrator;
+	
 
 	/** Called when the activity is first created. */
     @Override
@@ -38,12 +44,13 @@ public class FootFingerActivity extends Activity {
         CCDirector.sharedDirector().setDisplayFPS(true);
      
         CCDirector.sharedDirector().setAnimationInterval(1.0f / 60.0f);
-        CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
-        
+        //CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
+        CCDirector.sharedDirector().setLandscape(false);
       
+        
         CCScene scene = IndexPageLayer.scene();
 
-        //Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+       vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         //CCScene scene = GameLayer.scene(v);
 
         CCDirector.sharedDirector().runWithScene(scene);
@@ -69,7 +76,16 @@ public class FootFingerActivity extends Activity {
     public void onStop()
     {
         super.onStop();
-     
+        try {
+			NetworkControllerClient.getInstance().close();
+		} catch (IOException e) {
+			// do nothing
+		}
         CCDirector.sharedDirector().end();
     }
+
+	public static Vibrator getVibrator() {
+		return vibrator;
+	}
+	
 }

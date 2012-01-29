@@ -21,7 +21,7 @@ import bode.moritz.footfinger.network.NetworkControllerClient;
 
 public class ShooterConnectLayer extends CCColorLayer {
 
-	private final String IP_TO_CONNECT_TO = "134.102.25.228";
+	private final String IP_TO_CONNECT_TO = "134.102.26.87";
 	private final int PORT_TO_CONNECT_TO = 8080;
 	private NetworkControllerClient networClient;
 	protected ShooterConnectLayer(ccColor4B color) {
@@ -39,9 +39,9 @@ public class ShooterConnectLayer extends CCColorLayer {
 
 	 public void connectClick(Object sender){
 		 try {
-			this.networClient = new NetworkControllerClient();
-			this.networClient.connectSocket(this.IP_TO_CONNECT_TO, this.PORT_TO_CONNECT_TO);
-			CCDirector.sharedDirector().replaceScene(ShooterLayer.scene(networClient));
+			NetworkControllerClient networClient = NetworkControllerClient.getInstance();
+			networClient.connectSocket(this.IP_TO_CONNECT_TO, this.PORT_TO_CONNECT_TO);
+			CCDirector.sharedDirector().replaceScene(ShooterLayer.scene(FootFingerActivity.getVibrator()));
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

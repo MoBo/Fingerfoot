@@ -9,10 +9,15 @@ import java.net.UnknownHostException;
 
 public class NetworkControllerClient {
 
+	private static NetworkControllerClient instance;
 	private Socket socket = null;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
 
+	
+	private NetworkControllerClient() {
+		
+	}
 	
 	public void connectSocket(String ip, int port) throws UnknownHostException,
 			IOException {
@@ -27,13 +32,23 @@ public class NetworkControllerClient {
 	}
 	
 	public void close() throws IOException{
-		out.close();
-		in.close();
-		socket.close();
+		if(socket!=null){
+			out.close();
+			in.close();
+			socket.close();
+		}
+		
 	}
 
 	public boolean isConnected() {
 		return socket.isConnected();
+	}
+	
+	public static NetworkControllerClient getInstance(){
+		if(instance==null){
+			instance = new NetworkControllerClient();
+		}
+		return instance;
 	}
 	
 }

@@ -31,7 +31,9 @@ public class MainMenuLayer extends CCColorLayer {
 	}
 
 	public void keeperClick(Object sender){
-		CCDirector.sharedDirector().replaceScene(GoalKeeperWaitingConnectionLayer.scene());
+//		boolean landscape = CCDirector.sharedDirector().getLandscape();
+//      CCDirector.sharedDirector().setLandscape(!landscape);
+//		CCDirector.sharedDirector().replaceScene(GameLayer.scene(null));
 	}
 	
 	public void shooterClick(Object sender){
@@ -43,7 +45,7 @@ public class MainMenuLayer extends CCColorLayer {
 	{
 	    CCScene scene = CCScene.node();
 	    CCLayer layer = new MainMenuLayer(ccColor4B.ccc4(255, 255, 255, 255));
-	 
+	    
 	    scene.addChild(layer);
 	 
 	    return scene;

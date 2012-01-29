@@ -35,7 +35,7 @@ public class IndexPageLayer extends CCColorLayer {
 	}
 
 	public void startClick(Object sender){
-		CCDirector.sharedDirector().replaceScene(MainMenuLayer.scene());
+		CCDirector.sharedDirector().runWithScene(MainMenuLayer.scene());
 	}
 	
 	public void helpClick(Object sender){
