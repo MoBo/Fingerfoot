@@ -32,9 +32,9 @@ public class MainMenuLayer extends CCColorLayer {
 		addChild(background);
 		
 		
-		CCSprite text = CCSprite.sprite("selection/text.png");
+		CCSprite text = CCSprite.sprite("selection/text_mainmenu.png");
 		text.setScale(winScaleWidthFactor);
-		text.setAnchorPoint(CGPoint.ccp(CCDirector.sharedDirector().displaySize().getWidth()/2, 60.0f));
+		text.setPosition(CGPoint.ccp(CCDirector.sharedDirector().displaySize().getWidth()/2, 650.0f));
 		addChild(text);
 		
 		CCMenuItem keeperItem = CCMenuItemImage.item("selection/keeper_btn.png", "selection/keeper_btn_p.png", this, "keeperClick");
@@ -59,12 +59,8 @@ public class MainMenuLayer extends CCColorLayer {
 	public void keeperClick(Object sender){
 //		boolean landscape = CCDirector.sharedDirector().getLandscape();
 //      CCDirector.sharedDirector().setLandscape(!landscape);
-		boolean landscape = CCDirector.sharedDirector().getLandscape();
-		if(!landscape){
-			CCDirector.sharedDirector().setLandscape(true);
-		}
         
-		CCDirector.sharedDirector().replaceScene(GoalKeeperLayer.scene());
+		CCDirector.sharedDirector().replaceScene(GoalKeeperWaitingConnectionLayer.scene());
 		//CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationLandscapeLeft);
 	}
 	

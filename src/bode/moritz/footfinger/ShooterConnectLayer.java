@@ -11,6 +11,7 @@ import org.cocos2d.menus.CCMenuItem;
 import org.cocos2d.menus.CCMenuItemImage;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor4B;
 
@@ -28,11 +29,25 @@ public class ShooterConnectLayer extends CCColorLayer {
 		super(color);
 		
 		this.setIsTouchEnabled(true);
+		float winScaleWidthFactor = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0f);
 		
+		CCSprite background = CCSprite.sprite("intro/intro_bg.png");
+		float winSize = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0f);
+		background.setScale(winSize);
+		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
 		
-		CCMenuItem keeperItem = CCMenuItemImage.item("enterip/shooter.png", "enterip/shooter_p.png", this, "connectClick");
-		CCMenu menu = CCMenu.menu(keeperItem, keeperItem);
-        menu.alignItemsVertically(300f);
+		addChild(background);
+		
+		CCMenuItem shooterItem = CCMenuItemImage.item("enterip/shooter.png", "enterip/shooter_p.png", this, "connectClick");
+		CCMenuItem backItem = CCMenuItemImage.item("selection/prev_btn.png", "selection/prev_btn_p.png", this, "prevClick");
+		backItem.setScale(winScaleWidthFactor);
+		shooterItem.setScale(winScaleWidthFactor);
+		
+		backItem.setScale(winScaleWidthFactor);
+		backItem.setPosition(0f, -300f);
+		
+		CCMenu menu = CCMenu.menu(shooterItem, backItem);
+        //menu.alignItemsVertically(300f);
         
         addChild(menu);
 	}
@@ -51,7 +66,9 @@ public class ShooterConnectLayer extends CCColorLayer {
 		}
 	 }
 	
-	
+	public void prevClick(Object sender){
+		CCDirector.sharedDirector().replaceScene(MainMenuLayer.scene());
+	}
 	public static CCScene scene()
 	{
 	    CCScene scene = CCScene.node();

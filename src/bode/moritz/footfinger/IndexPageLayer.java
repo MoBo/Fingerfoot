@@ -18,7 +18,7 @@ public class IndexPageLayer extends CCColorLayer {
 		this.setIsTouchEnabled(true);		
 		
 		CCSprite background = CCSprite.sprite("intro/intro_bg.png");
-		float winSize = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0);
+		float winSize = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0f);
 		background.setScale(winSize);
 		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
 		
