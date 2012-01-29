@@ -17,29 +17,41 @@ import org.cocos2d.types.ccColor4B;
 public class MainMenuLayer extends CCColorLayer {
 
 
+	CGSize winSize;
+	
 	protected MainMenuLayer(ccColor4B color) {
 		super(color);
 		
 		this.setIsTouchEnabled(true);
 		CCSprite background = CCSprite.sprite("intro/intro_bg.png");
-		float winSize = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0);
-		background.setScale(winSize);
+		float winScaleWidthFactor = (float) (CCDirector.sharedDirector().displaySize().getWidth()/960.0f);
+		winSize = CCDirector.sharedDirector().displaySize();
+		
+		background.setScale(winScaleWidthFactor);
 		background.setAnchorPoint(CGPoint.ccp(0f, 0f));
 		addChild(background);
 		
 		
 		CCSprite text = CCSprite.sprite("selection/text.png");
-		text.setScale(winSize);
+		text.setScale(winScaleWidthFactor);
 		text.setAnchorPoint(CGPoint.ccp(CCDirector.sharedDirector().displaySize().getWidth()/2, 60.0f));
 		addChild(text);
 		
 		CCMenuItem keeperItem = CCMenuItemImage.item("selection/keeper_btn.png", "selection/keeper_btn_p.png", this, "keeperClick");
 		CCMenuItem shooterItem = CCMenuItemImage.item("selection/shooter_btn.png", "selection/shooter_btn_p.png", this, "shooterClick");
-		keeperItem.setScale(winSize);
-		shooterItem.setScale(winSize);
-		CCMenu menu = CCMenu.menu(keeperItem, shooterItem);
+		CCMenuItem backItem = CCMenuItemImage.item("selection/prev_btn.png", "selection/prev_btn_p.png", this, "prevClick");
+		
+		shooterItem.setScale(winScaleWidthFactor);
+		shooterItem.setPosition(0f, +50f);
+		keeperItem.setScale(winScaleWidthFactor);
+		keeperItem.setPosition(0f, -50f);
+		backItem.setScale(winScaleWidthFactor);
+		backItem.setPosition(0f, -300f);
+		//backItem.setPosition(CGPoint.ccp(winSize.getWidth()/2f, 100f));
+		
+		CCMenu menu = CCMenu.menu(keeperItem, shooterItem, backItem);
 		menu.setAnchorPoint(CCDirector.sharedDirector().displaySize().getWidth()/2, 400.0f);
-        menu.alignItemsVertically();
+        //menu.alignItemsVertically();
         
         addChild(menu);
 	}
@@ -58,6 +70,10 @@ public class MainMenuLayer extends CCColorLayer {
 	
 	public void shooterClick(Object sender){
 		CCDirector.sharedDirector().replaceScene(ShooterConnectLayer.scene());
+	}
+	
+	public void prevClick(Object sender){
+		CCDirector.sharedDirector().replaceScene(IndexPageLayer.scene());
 	}
 	
 	
