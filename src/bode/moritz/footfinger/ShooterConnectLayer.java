@@ -88,26 +88,33 @@ public class ShooterConnectLayer extends CCColorLayer {
 					information.setString(input);
 					Log.e("input", input.toString());
 					return true;
+				}else if(keyCode == KeyEvent.KEYCODE_PERIOD){
+					this.addDot();
 				}else if(keyCode == KeyEvent.KEYCODE_DEL){
 					this.deleteInput();
 				}else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-					if(input.length()==15){
-						IP_TO_CONNECT_TO = input.toString();
-						FootFingerActivity.hideSoftInput();
-						connectToServer();
-					}
+					IP_TO_CONNECT_TO = input.toString();
+					FootFingerActivity.hideSoftInput();
+					connectToServer();
 					return true;
 				}
 			}
 			return false;
 		}
 
+		private void addDot() {
+			if(input.length()<15){
+				input.append('.');
+				information.setString(input);
+			}
+		}
+
 		private void deleteInput() {
 			if(input.length()>0){
 				input.setLength(input.length()-1);
-				if(input.length()==4||input.length()==8||input.length()==12){
-					input.setLength(input.length()-1);
-				}
+//				if(input.length()==4||input.length()==8||input.length()==12){
+//					input.setLength(input.length()-1);
+//				}
 				input.trimToSize();
 				if(input.length()==0){
 					input.append("Enter IP");
@@ -119,9 +126,9 @@ public class ShooterConnectLayer extends CCColorLayer {
 
 		private void makeStringOutOfInput(String toAdd) {
 			if(input.length()<15){
-				if(input.length()==3||input.length()==7||input.length()==11){
-					input.append('.');
-				}
+//				if(input.length()==3||input.length()==7||input.length()==11){
+//					input.append('.');
+//				}
 				input.append(toAdd);
 				
 			}
@@ -154,7 +161,7 @@ public class ShooterConnectLayer extends CCColorLayer {
 		information = CCLabel
 				.makeLabel(this.input.toString(), "DroidSans", 30f);
 		information.setPosition(CGPoint.ccp(winSize.getWidth() / 2f - 20f,
-				winSize.getHeight() / 2f - 20f));
+				winSize.getHeight() / 2f ));
 		information.setColor(ccColor3B.ccBLACK);
 
 		CCMenuItem shooterItem = CCMenuItemImage.item("enterip/shooter.png",
