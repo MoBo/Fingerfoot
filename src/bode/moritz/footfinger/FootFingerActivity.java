@@ -19,13 +19,20 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.text.Editable;
+import android.text.method.KeyListener;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import bode.moritz.footfinger.network.NetworkControllerClient;
 
 public class FootFingerActivity extends Activity {
-    private CCGLSurfaceView _glSurfaceView;
+    private static CCGLSurfaceView _glSurfaceView;
+	private static InputMethodManager inputMethodManager;
 	private static WifiManager wim;
 	private static Vibrator vibrator;
 	private static Context context;
@@ -70,6 +77,7 @@ public class FootFingerActivity extends Activity {
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         wim= (WifiManager) getSystemService(WIFI_SERVICE);
+        inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         
         CCDirector.sharedDirector().runWithScene(scene);
     }
@@ -133,4 +141,13 @@ public class FootFingerActivity extends Activity {
 		SoundEngine.sharedEngine().pauseSound();
 		SoundEngine.sharedEngine().playEffect(context, id);
 	}
+	
+	public static void showSoftInput(OnKeyListener keyListener){
+		_glSurfaceView.setOnKeyListener(keyListener);
+		inputMethodManager.showSoftInput(_glSurfaceView, InputMethodManager.SHOW_FORCED);
+	}
+	
+	public static void hideSoftInput(){
+		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+	}	
 }
