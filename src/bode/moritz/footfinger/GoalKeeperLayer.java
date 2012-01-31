@@ -293,12 +293,12 @@ public class GoalKeeperLayer extends CCColorLayer {
 					while ((line = in.readLine()) != null) {
 						if (checkGameMatch(line)) {
 							Log.e("print", "You're a winner");
-							FootFingerActivity.playEffect(R.raw.success);
+							FootFingerActivity.playSound(R.raw.success,false);
 							// line = "You're a winner";
 							out.println("1");
 						} else {
 							Log.e("print", "You're a looser");
-							FootFingerActivity.playEffect(R.raw.fail);
+							FootFingerActivity.playSound(R.raw.fail,false);
 							// line = "You're a looser";
 
 							out.println("0");

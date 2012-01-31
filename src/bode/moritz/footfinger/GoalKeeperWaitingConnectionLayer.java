@@ -41,7 +41,7 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 		
 		
 		
-		CCLabel information = CCLabel.makeLabel("127.0.0.1", "DroidSans", 30f);
+		CCLabel information = CCLabel.makeLabel(FootFingerActivity.getIPAdresse(), "DroidSans", 30f);
 		information.setPosition(CGPoint.ccp(winSize.getWidth()/2f-20f, winSize.getHeight()/2f-20f));
 		information.setColor(ccColor3B.ccBLACK);
 //		

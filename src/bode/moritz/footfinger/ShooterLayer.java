@@ -100,7 +100,7 @@ public class ShooterLayer extends CCColorLayer {
 		this.ball.setPosition(CGPoint.ccp(winSize.getWidth() / 2f, 100f));
 		this.shotWasSended = false;
 		this.rotateFrisbee();
-		startSlowSound();
+		FootFingerActivity.playSound(R.raw.frisbe_slow, true);
 	}
 
 	private void rotateFrisbee() {
@@ -130,7 +130,7 @@ public class ShooterLayer extends CCColorLayer {
 			dragAndDrop = true;
 			new Thread(new VibrateTask()).start();
 			
-			this.startFasterSound();
+			FootFingerActivity.playSound(R.raw.frisbe_fast, true);
 			
 			this.timeStamp = System.currentTimeMillis();
 			this.lastUpperPoint = winSize.getHeight() - event.getRawY();
@@ -138,30 +138,6 @@ public class ShooterLayer extends CCColorLayer {
 					- event.getRawY());
 		}
 		return super.ccTouchesBegan(event);
-	}
-
-	private void startFasterSound() {
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				SoundEngine.sharedEngine().pauseSound();
-				FootFingerActivity.playSound(R.raw.frisbe_fast, true);
-			}
-		}).start();
-		
-	}
-	
-	private void startSlowSound() {
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				SoundEngine.sharedEngine().pauseSound();
-				FootFingerActivity.playSound(R.raw.frisbe_slow, true);
-			}
-		}).start();
-		
 	}
 
 	@Override
@@ -217,7 +193,6 @@ public class ShooterLayer extends CCColorLayer {
 				// config);
 
 			}
-			SoundEngine.sharedEngine().pauseSound();
 			dragAndDrop = false;
 		}
 		return super.ccTouchesEnded(event);
@@ -316,10 +291,10 @@ public class ShooterLayer extends CCColorLayer {
 
 			// calculate big triangle to get point frisbee should move to
 			// Log.e("ab", "a " + a + " b" + b);
-			b = 10f + startXPosition;
+			b = 100f + startXPosition;
 			a = (float) (Math.tan(angle) * b);
 			c = (float) Math.sqrt(a * a + b * b);
-			moveTo = CGPoint.ccp(-10f, startYPosition + a);
+			moveTo = CGPoint.ccp(-100f, startYPosition + a);
 		}
 
 		calculateHitBoxes(drawDirection);
@@ -334,7 +309,10 @@ public class ShooterLayer extends CCColorLayer {
 			CCCallFuncN actionMoveDone = CCCallFuncN.action(this,
 					"spriteMoveFinished");
 			CCSequence actions = CCSequence.actions(actionMove, actionMoveDone);
-			FootFingerActivity.playEffect(R.raw.swirl);
+			
+			
+			Log.e("playSwirlSound", "true");
+			FootFingerActivity.playSound(R.raw.swirl,false);
 			
 			ball.runAction(actions);
 		}
@@ -411,7 +389,7 @@ public class ShooterLayer extends CCColorLayer {
 						resetFrisbee();
 					} catch (IOException e) {
 						// do nothing
-					} catch (InterruptedException e) {
+					}catch (InterruptedException e) {
 						// do nothing
 					}
 

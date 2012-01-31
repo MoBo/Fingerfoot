@@ -11,6 +11,8 @@ import org.cocos2d.nodes.CCSprite;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.ccColor4B;
 
+import android.util.Log;
+
 public class IndexPageLayer extends CCColorLayer {
 
 	protected IndexPageLayer(ccColor4B color) {
