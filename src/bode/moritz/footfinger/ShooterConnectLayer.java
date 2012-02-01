@@ -31,11 +31,13 @@ public class ShooterConnectLayer extends CCColorLayer {
 	private final int PORT_TO_CONNECT_TO = 8080;
 	private NetworkControllerClient networClient;
 	private CGSize winSize;
-	private StringBuilder input = new StringBuilder("Enter IP");
+	private final String DEFAULT_TEXT = "Enter IP";
+	private StringBuilder input = new StringBuilder(DEFAULT_TEXT);
 
 	private OnKeyListener keyListener = new OnKeyListener() {
 
 		boolean firstInput = true;
+		
 
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -109,14 +111,14 @@ public class ShooterConnectLayer extends CCColorLayer {
 		}
 
 		private void deleteInput() {
-			if(input.length()>0){
+			if(input.length()>0&&!firstInput){
 				input.setLength(input.length()-1);
 //				if(input.length()==4||input.length()==8||input.length()==12){
 //					input.setLength(input.length()-1);
 //				}
 				input.trimToSize();
 				if(input.length()==0){
-					input.append("Enter IP");
+					input.append(DEFAULT_TEXT);
 					firstInput = true;
 				}
 				information.setString(input);
