@@ -86,7 +86,6 @@ public class ShooterConnectLayer extends CCColorLayer {
 					}
 					this.makeStringOutOfInput(toAdd);
 					information.setString(input);
-					Log.e("input", input.toString());
 					return true;
 				}else if(keyCode == KeyEvent.KEYCODE_PERIOD){
 					this.addDot();
@@ -186,20 +185,28 @@ public class ShooterConnectLayer extends CCColorLayer {
 	}
 	
 	private void connectToServer(){
-		try {
-			NetworkControllerClient networClient = NetworkControllerClient
-					.getInstance();
-			networClient.connectSocket(this.IP_TO_CONNECT_TO,
-					this.PORT_TO_CONNECT_TO);
-			CCDirector.sharedDirector().replaceScene(
-					ShooterLayer.scene(FootFingerActivity.getVibrator()));
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					NetworkControllerClient networClient = NetworkControllerClient
+							.getInstance();
+					Log.e("connectTO", IP_TO_CONNECT_TO);
+					networClient.connectSocket(IP_TO_CONNECT_TO,
+							PORT_TO_CONNECT_TO);
+					CCDirector.sharedDirector().replaceScene(
+							ShooterLayer.scene(FootFingerActivity.getVibrator()));
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		
 	}
 
 	public void prevClick(Object sender) {
