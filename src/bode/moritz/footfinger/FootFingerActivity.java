@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class FootFingerActivity extends Activity {
 	private static WifiManager wim;
 	private static Vibrator vibrator;
 	private static Context context;
+	private static CCScene currentScene;
+	private static ArrayList<Class<?>> layerStack = new ArrayList<Class<?>>();
 
 	/** Called when the activity is first created. */
     @Override
@@ -47,22 +50,18 @@ public class FootFingerActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
      
         _glSurfaceView = new CCGLSurfaceView(this);
-     
-        setContentView(_glSurfaceView);
-    }
-    
-    @Override
-    protected void onStart() {
-    	// TODO Auto-generated method stub
-    	super.onStart();
-    	
-    	CCDirector.sharedDirector().attachInView(_glSurfaceView);
+        
+       
+        
+		CCDirector.sharedDirector().attachInView(_glSurfaceView);
         
         CCDirector.sharedDirector().setDisplayFPS(true);
      
         CCDirector.sharedDirector().setAnimationInterval(1.0f / 60.0f);
         CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
       
+        this.setContentView(_glSurfaceView);
+        
         SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.background_music);
         SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.frisbe_slow);
         SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.frisbe_fast);
@@ -72,7 +71,6 @@ public class FootFingerActivity extends Activity {
         
         SoundEngine.sharedEngine().playSound(getApplicationContext(), R.raw.background_music, true);
         
-        
         CCScene scene = IndexPageLayer.scene();
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -81,13 +79,20 @@ public class FootFingerActivity extends Activity {
         
         CCDirector.sharedDirector().runWithScene(scene);
     }
+    
+    @Override
+    protected void onStart() {
+    	// TODO Auto-generated method stub
+    	super.onStart();
+    }
 
     @Override
     public void onPause()
     {
         super.onPause();
-     
-        CCDirector.sharedDirector().pause();
+        SoundEngine.sharedEngine().pauseSound();
+        currentScene = CCDirector.sharedDirector().getRunningScene();
+        CCDirector.sharedDirector().onPause();
     }
      
     @Override
@@ -95,7 +100,14 @@ public class FootFingerActivity extends Activity {
     {
         super.onResume();
      
-        CCDirector.sharedDirector().resume();
+        CCDirector.sharedDirector().onResume();
+        
+        //check if first not start
+        if(currentScene!=null){
+        	SoundEngine.sharedEngine().resumeSound();
+            CCDirector.sharedDirector().runWithScene(currentScene);
+        }
+        
     }
      
     @Override
@@ -113,6 +125,27 @@ public class FootFingerActivity extends Activity {
         CCDirector.sharedDirector().end();
     }
 
+    public static void setNextView(Class<?> nextLayer,CCScene scene){
+    	layerStack.add(nextLayer);
+    	CCDirector.sharedDirector().replaceScene(scene);
+    }
+    
+    public static void gotoPreviousView(){
+    	Class<?> layer = layerStack.remove(layerStack.size()-1);
+    	if(layer == IndexPageLayer.class){
+    		CCDirector.sharedDirector().replaceScene(IndexPageLayer.scene());
+    	}
+    }
+    
+    @Override
+    public void onBackPressed() {
+    	if(layerStack.size()<1){
+    		super.onBackPressed();
+    	}else{
+    		gotoPreviousView();
+    	}
+    }
+    
 	public static Vibrator getVibrator() {
 		return vibrator;
 	}
