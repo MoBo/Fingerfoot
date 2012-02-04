@@ -197,8 +197,7 @@ public class ShooterConnectLayer extends CCColorLayer {
 					Log.e("connectTO", IP_TO_CONNECT_TO);
 					networClient.connectSocket(IP_TO_CONNECT_TO,
 							PORT_TO_CONNECT_TO);
-					CCDirector.sharedDirector().replaceScene(
-							ShooterLayer.scene(FootFingerActivity.getVibrator()));
+					FootFingerActivity.setNextView(getClass(), ShooterLayer.class);
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -212,7 +211,7 @@ public class ShooterConnectLayer extends CCColorLayer {
 	}
 
 	public void prevClick(Object sender) {
-		CCDirector.sharedDirector().replaceScene(MainMenuLayer.scene());
+		FootFingerActivity.gotoPreviousView();
 	}
 
 	public static CCScene scene() {

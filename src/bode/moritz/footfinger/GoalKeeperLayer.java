@@ -49,10 +49,10 @@ public class GoalKeeperLayer extends CCColorLayer {
 	private ServerSocket server;
 	private Socket client;
 
-	protected GoalKeeperLayer(ccColor4B color, Socket client) {
+	protected GoalKeeperLayer(ccColor4B color) {
 		super(color);
 		SoundEngine.sharedEngine().pauseSound();
-		this.client = client;
+		this.client = FootFingerActivity.getClient();
 		
 		this.setIsAccelerometerEnabled(true);
 		this.setIsTouchEnabled(true);
@@ -215,10 +215,10 @@ public class GoalKeeperLayer extends CCColorLayer {
 	// this.keeperRunnung = false;
 	// }
 
-	public static CCScene scene(Socket client) {
+	public static CCScene scene() {
 
 		CCScene scene = CCScene.node();
-		CCLayer layer = new GoalKeeperLayer(ccColor4B.ccc4(255, 255, 255, 255),client);
+		CCLayer layer = new GoalKeeperLayer(ccColor4B.ccc4(255, 255, 255, 255));
 
 		scene.addChild(layer);
 

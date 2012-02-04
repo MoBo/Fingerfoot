@@ -3,6 +3,7 @@ package bode.moritz.footfinger;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -39,6 +40,7 @@ public class FootFingerActivity extends Activity {
 	private static Context context;
 	private static CCScene currentScene;
 	private static ArrayList<Class<?>> layerStack = new ArrayList<Class<?>>();
+	private static Socket currentClient;
 
 	/** Called when the activity is first created. */
     @Override
@@ -125,15 +127,41 @@ public class FootFingerActivity extends Activity {
         CCDirector.sharedDirector().end();
     }
 
-    public static void setNextView(Class<?> nextLayer,CCScene scene){
-    	layerStack.add(nextLayer);
-    	CCDirector.sharedDirector().replaceScene(scene);
+    public static void setNextView(Class<?> thisLayer, Class<?> nextLayer){
+    	layerStack.add(thisLayer);
+    	setViewByClass(nextLayer);
     }
     
     public static void gotoPreviousView(){
     	Class<?> layer = layerStack.remove(layerStack.size()-1);
-    	if(layer == IndexPageLayer.class){
+    	if(layer == GoalKeeperWaitingConnectionLayer.class){
+    		layerStack.add(GoalKeeperLayer.class);
+    		//Doing nothing at the moment 
+    		// TODO Need a toast for the User to notify him if really want to quit the game
+    	}else if(layer == ShooterConnectLayer.class){
+    		layerStack.add(ShooterLayer.class);
+    		//Doing nothing at the moment 
+    		// TODO Need a toast for the User to notify him if really want to quit the game
+    	}else{
+    		setViewByClass(layer);
+    	}
+    	
+    }
+    
+    private static void setViewByClass(Class<?> newLayer){
+    	// TODO Change this to Reflection
+    	if(newLayer == IndexPageLayer.class){
     		CCDirector.sharedDirector().replaceScene(IndexPageLayer.scene());
+    	}else if(newLayer == MainMenuLayer.class){
+    		CCDirector.sharedDirector().replaceScene(MainMenuLayer.scene());
+    	}else if(newLayer == ShooterConnectLayer.class){
+    		CCDirector.sharedDirector().replaceScene(ShooterConnectLayer.scene());
+    	}else if(newLayer == GoalKeeperWaitingConnectionLayer.class){
+    		CCDirector.sharedDirector().replaceScene(GoalKeeperWaitingConnectionLayer.scene());
+    	}else if(newLayer == GoalKeeperLayer.class){
+    		CCDirector.sharedDirector().replaceScene(GoalKeeperLayer.scene());
+    	}else if(newLayer == ShooterLayer.class){
+    		CCDirector.sharedDirector().replaceScene(ShooterLayer.scene());
     	}
     }
     
@@ -182,5 +210,14 @@ public class FootFingerActivity extends Activity {
 	
 	public static void hideSoftInput(){
 		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+	}
+
+	public static void setClient(Socket client) {
+		currentClient = client;
+		
+	}
+
+	public static Socket getClient() {
+		return currentClient;
 	}	
 }

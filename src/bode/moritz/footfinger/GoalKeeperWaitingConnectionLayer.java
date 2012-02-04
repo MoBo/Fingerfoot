@@ -98,8 +98,8 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 				try {
 					client = server.accept();
 					//Client connected
-					CCDirector.sharedDirector().replaceScene(GoalKeeperLayer.scene(client));
-					
+					FootFingerActivity.setClient(client);
+					FootFingerActivity.setNextView(getClass(), ShooterLayer.class);
 				} catch (IOException e) {
 					// do nothing
 				}
@@ -108,7 +108,7 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 	}
 	
 	public void prevClick(Object sender){
-		CCDirector.sharedDirector().replaceScene(MainMenuLayer.scene());
+		FootFingerActivity.gotoPreviousView();
 	}
 	
 	public static CCScene scene()

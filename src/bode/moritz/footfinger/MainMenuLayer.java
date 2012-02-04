@@ -57,19 +57,15 @@ public class MainMenuLayer extends CCColorLayer {
 	}
 
 	public void keeperClick(Object sender){
-//		boolean landscape = CCDirector.sharedDirector().getLandscape();
-//      CCDirector.sharedDirector().setLandscape(!landscape);
-        
-		CCDirector.sharedDirector().replaceScene(GoalKeeperWaitingConnectionLayer.scene());
-		//CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationLandscapeLeft);
+		FootFingerActivity.setNextView(this.getClass(),GoalKeeperWaitingConnectionLayer.class);
 	}
 	
 	public void shooterClick(Object sender){
-		CCDirector.sharedDirector().replaceScene(ShooterConnectLayer.scene());
+		FootFingerActivity.setNextView(this.getClass(),ShooterConnectLayer.class);
 	}
 	
 	public void prevClick(Object sender){
-		CCDirector.sharedDirector().replaceScene(IndexPageLayer.scene());
+		FootFingerActivity.gotoPreviousView();
 	}
 	
 	

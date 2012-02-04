@@ -64,11 +64,11 @@ public class ShooterLayer extends CCColorLayer {
 	private int lastHitBox;
 	private boolean shotWasSended = false;
 
-	protected ShooterLayer(ccColor4B color, Vibrator v) {
+	protected ShooterLayer(ccColor4B color) {
 		super(color);
 
 		this.networkClient = NetworkControllerClient.getInstance();
-		vibrator = v;
+		vibrator = FootFingerActivity.getVibrator();
 		this.setIsTouchEnabled(true);
 		this.setIsAccelerometerEnabled(true);
 
@@ -362,9 +362,9 @@ public class ShooterLayer extends CCColorLayer {
 			}
 	}
 
-	public static CCScene scene(Vibrator v) {
+	public static CCScene scene() {
 		CCScene scene = CCScene.node();
-		CCLayer layer = new ShooterLayer(ccColor4B.ccc4(255, 255, 255, 255), v);
+		CCLayer layer = new ShooterLayer(ccColor4B.ccc4(255, 255, 255, 255));
 
 		scene.addChild(layer);
 

@@ -37,7 +37,7 @@ public class IndexPageLayer extends CCColorLayer {
 	}
 
 	public void startClick(Object sender){
-		FootFingerActivity.setNextView(this.getClass(), MainMenuLayer.scene());
+		FootFingerActivity.setNextView(this.getClass(),MainMenuLayer.class);
 		//FootFingerActivity.getInstance().startGoalkeeper();
 	}
 	
