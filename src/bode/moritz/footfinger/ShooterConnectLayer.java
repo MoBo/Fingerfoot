@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
 import bode.moritz.footfinger.network.NetworkControllerClient;
+import bode.moritz.footfinger.sound.SoundManager;
 
 public class ShooterConnectLayer extends CCColorLayer {
 
@@ -197,6 +198,7 @@ public class ShooterConnectLayer extends CCColorLayer {
 					Log.e("connectTO", IP_TO_CONNECT_TO);
 					networClient.connectSocket(IP_TO_CONNECT_TO,
 							PORT_TO_CONNECT_TO);
+					SoundManager.stopSound(R.raw.background_music);
 					FootFingerActivity.setNextView(getClass(), ShooterLayer.class);
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block

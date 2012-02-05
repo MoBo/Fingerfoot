@@ -21,6 +21,8 @@ import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor3B;
 import org.cocos2d.types.ccColor4B;
 
+import bode.moritz.footfinger.sound.SoundManager;
+
 import android.util.Log;
 
 public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
@@ -99,7 +101,8 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer{
 					client = server.accept();
 					//Client connected
 					FootFingerActivity.setClient(client);
-					FootFingerActivity.setNextView(getClass(), ShooterLayer.class);
+					SoundManager.stopSound(R.raw.background_music);
+					FootFingerActivity.setNextView(getClass(), GoalKeeperLayer.class);
 				} catch (IOException e) {
 					// do nothing
 				}

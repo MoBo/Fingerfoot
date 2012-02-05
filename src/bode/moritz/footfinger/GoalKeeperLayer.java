@@ -19,6 +19,8 @@ import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor4B;
 
+import bode.moritz.footfinger.sound.SoundManager;
+
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
@@ -218,7 +220,7 @@ public class GoalKeeperLayer extends CCColorLayer {
 	public static CCScene scene() {
 
 		CCScene scene = CCScene.node();
-		CCLayer layer = new GoalKeeperLayer(ccColor4B.ccc4(255, 255, 255, 255));
+		CCLayer layer = new GoalKeeperLayer(ccColor4B.ccc4(0, 0, 0, 255));
 
 		scene.addChild(layer);
 
@@ -293,12 +295,14 @@ public class GoalKeeperLayer extends CCColorLayer {
 					while ((line = in.readLine()) != null) {
 						if (checkGameMatch(line)) {
 							Log.e("print", "You're a winner");
-							FootFingerActivity.playSound(R.raw.success,false);
+							FootFingerActivity.makeToast("(-:");
+							SoundManager.playSound(R.raw.success, 1f, 0);
 							// line = "You're a winner";
 							out.println("1");
 						} else {
 							Log.e("print", "You're a looser");
-							FootFingerActivity.playSound(R.raw.fail,false);
+							FootFingerActivity.makeToast(")-:");
+							SoundManager.playSound(R.raw.missed,1f,0);
 							// line = "You're a looser";
 
 							out.println("0");
@@ -369,5 +373,4 @@ public class GoalKeeperLayer extends CCColorLayer {
 			return 0;
 		}
 	}
-
 }

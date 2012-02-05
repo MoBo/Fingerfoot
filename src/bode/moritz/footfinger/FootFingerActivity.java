@@ -16,6 +16,7 @@ import org.cocos2d.sound.SoundEngine;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.SoundPool;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -30,7 +31,9 @@ import android.view.View.OnKeyListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 import bode.moritz.footfinger.network.NetworkControllerClient;
+import bode.moritz.footfinger.sound.SoundManager;
 
 public class FootFingerActivity extends Activity {
     private static CCGLSurfaceView _glSurfaceView;
@@ -41,6 +44,7 @@ public class FootFingerActivity extends Activity {
 	private static CCScene currentScene;
 	private static ArrayList<Class<?>> layerStack = new ArrayList<Class<?>>();
 	private static Socket currentClient;
+	private boolean backgroundMusicPaused = false;
 
 	/** Called when the activity is first created. */
     @Override
@@ -60,18 +64,11 @@ public class FootFingerActivity extends Activity {
         CCDirector.sharedDirector().setDisplayFPS(true);
      
         CCDirector.sharedDirector().setAnimationInterval(1.0f / 60.0f);
-        CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
-      
+        CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);  
+        
+        
+        
         this.setContentView(_glSurfaceView);
-        
-        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.background_music);
-        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.frisbe_slow);
-        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.frisbe_fast);
-        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.swirl);
-        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.missed);
-        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.success);
-        
-        SoundEngine.sharedEngine().playSound(getApplicationContext(), R.raw.background_music, true);
         
         CCScene scene = IndexPageLayer.scene();
 
@@ -86,13 +83,26 @@ public class FootFingerActivity extends Activity {
     protected void onStart() {
     	// TODO Auto-generated method stub
     	super.onStart();
+    	SoundManager.getInstance();
+        SoundManager.initSounds(this);
+        SoundManager.loadSounds(new SoundPool.OnLoadCompleteListener() {
+ 			
+ 			@Override
+ 			public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+ 				if(sampleId==SoundManager.getSampleId(R.raw.background_music)){
+ 					SoundManager.playSound(R.raw.background_music, 1f, -1);
+ 				}
+ 				
+ 			}
+ 		});
     }
 
     @Override
     public void onPause()
     {
         super.onPause();
-        SoundEngine.sharedEngine().pauseSound();
+        SoundManager.pauseSound(R.raw.background_music);
+        this.backgroundMusicPaused  = true;
         currentScene = CCDirector.sharedDirector().getRunningScene();
         CCDirector.sharedDirector().onPause();
     }
@@ -103,14 +113,25 @@ public class FootFingerActivity extends Activity {
         super.onResume();
      
         CCDirector.sharedDirector().onResume();
+//        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.background_music);
+//        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.frisbe_slow);
+//        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.frisbe_fast);
+//        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.swirl);
+//        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.missed);
+//        SoundEngine.sharedEngine().preloadSound(getApplicationContext(), R.raw.success);
+//        
+//        SoundEngine.sharedEngine().playSound(getApplicationContext(), R.raw.background_music, true);
         
+        if(this.backgroundMusicPaused){
+        	SoundManager.resumeSound(R.raw.background_music);
+        	this.backgroundMusicPaused =false;
+        }
         //check if first not start
         if(currentScene!=null){
-        	SoundEngine.sharedEngine().resumeSound();
+        	//SoundEngine.sharedEngine().resumeSound();
             CCDirector.sharedDirector().runWithScene(currentScene);
         }
-        
-    }
+    }  
      
     @Override
     public void onStop()
@@ -121,9 +142,9 @@ public class FootFingerActivity extends Activity {
 		} catch (IOException e) {
 			// do nothing
 		}
-        SoundEngine.sharedEngine().pauseSound();
-        SoundEngine.sharedEngine().realesAllSounds();
-        SoundEngine.sharedEngine().realesAllEffects();
+        SoundManager.cleanup();
+//        SoundEngine.sharedEngine().realesAllSounds();
+//        SoundEngine.sharedEngine().realesAllEffects();
         CCDirector.sharedDirector().end();
     }
 
@@ -134,11 +155,11 @@ public class FootFingerActivity extends Activity {
     
     public static void gotoPreviousView(){
     	Class<?> layer = layerStack.remove(layerStack.size()-1);
-    	if(layer == GoalKeeperWaitingConnectionLayer.class){
+    	if(layer == GoalKeeperLayer.class){
     		layerStack.add(GoalKeeperLayer.class);
     		//Doing nothing at the moment 
     		// TODO Need a toast for the User to notify him if really want to quit the game
-    	}else if(layer == ShooterConnectLayer.class){
+    	}else if(layer == ShooterLayer.class){
     		layerStack.add(ShooterLayer.class);
     		//Doing nothing at the moment 
     		// TODO Need a toast for the User to notify him if really want to quit the game
@@ -186,22 +207,22 @@ public class FootFingerActivity extends Activity {
          ((ipAdresse >> 24 ) & 0xFF);
 	}
 	
-	public static void playSound(final int id, final boolean loop){
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				SoundEngine.sharedEngine().pauseSound();
-				SoundEngine.sharedEngine().playSound(context, id, loop);
-			}
-		}).start();
-		
-	}
+//	public static void playSound(final int id, final boolean loop){
+//		new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				SoundEngine.sharedEngine().pauseSound();
+//				SoundEngine.sharedEngine().playSound(context, id, loop);
+//			}
+//		}).start();
+//		
+//	}
 	
-	public static void playEffect(int id){
-		SoundEngine.sharedEngine().pauseSound();
-		SoundEngine.sharedEngine().playEffect(context, id);
-	}
+//	public static void playEffect(int id){
+//		SoundEngine.sharedEngine().pauseSound();
+//		SoundEngine.sharedEngine().playEffect(context, id);
+//	}
 	
 	public static void showSoftInput(OnKeyListener keyListener){
 		_glSurfaceView.setOnKeyListener(keyListener);
@@ -214,10 +235,20 @@ public class FootFingerActivity extends Activity {
 
 	public static void setClient(Socket client) {
 		currentClient = client;
-		
 	}
 
 	public static Socket getClient() {
 		return currentClient;
 	}	
+	
+	public static void makeToast(final String string) {
+		CCDirector.sharedDirector().getActivity().runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				Toast.makeText(context, string, Toast.LENGTH_SHORT)
+				.show();
+			}
+		});
+	}
 }

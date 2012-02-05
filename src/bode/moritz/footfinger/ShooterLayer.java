@@ -3,7 +3,6 @@ package bode.moritz.footfinger;
 import java.io.IOException;
 
 import org.cocos2d.actions.instant.CCCallFuncN;
-import org.cocos2d.actions.interval.CCBezierTo;
 import org.cocos2d.actions.interval.CCMoveTo;
 import org.cocos2d.actions.interval.CCRotateTo;
 import org.cocos2d.actions.interval.CCSequence;
@@ -12,22 +11,16 @@ import org.cocos2d.layers.CCLayer;
 import org.cocos2d.layers.CCScene;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCSprite;
-import org.cocos2d.sound.SoundEngine;
-import org.cocos2d.types.CCBezierConfig;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGRect;
 import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor4B;
-import org.cocos2d.utils.javolution.MathLib;
 
-import bode.moritz.footfinger.network.NetworkControllerClient;
-
-import android.content.Context;
-import android.graphics.Path;
-import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
+import bode.moritz.footfinger.network.NetworkControllerClient;
+import bode.moritz.footfinger.sound.SoundManager;
 
 public class ShooterLayer extends CCColorLayer {
 
@@ -100,7 +93,7 @@ public class ShooterLayer extends CCColorLayer {
 		this.ball.setPosition(CGPoint.ccp(winSize.getWidth() / 2f, 100f));
 		this.shotWasSended = false;
 		this.rotateFrisbee();
-		FootFingerActivity.playSound(R.raw.frisbe_slow, true);
+		//SoundManager.playSound(R.raw.frisbe_slow, 1f,-1);
 	}
 
 	private void rotateFrisbee() {
@@ -129,8 +122,10 @@ public class ShooterLayer extends CCColorLayer {
 			this.savedMotionEvents = MotionEvent.obtain(event);
 			dragAndDrop = true;
 			new Thread(new VibrateTask()).start();
-			
-			FootFingerActivity.playSound(R.raw.frisbe_fast, true);
+		
+//			SoundManager.stopSound(R.raw.frisbe_slow);
+//			
+//			SoundManager.playSound(R.raw.frisbe_fast,1f,-1);
 			
 			this.timeStamp = System.currentTimeMillis();
 			this.lastUpperPoint = winSize.getHeight() - event.getRawY();
@@ -312,7 +307,7 @@ public class ShooterLayer extends CCColorLayer {
 			
 			
 			Log.e("playSwirlSound", "true");
-			FootFingerActivity.playSound(R.raw.swirl,false);
+			SoundManager.playSound(R.raw.swirl,1f,0);
 			
 			ball.runAction(actions);
 		}
