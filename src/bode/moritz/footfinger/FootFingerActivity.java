@@ -155,12 +155,15 @@ public class FootFingerActivity extends Activity {
     
     public static void gotoPreviousView(){
     	Class<?> layer = layerStack.remove(layerStack.size()-1);
+    	// TODO Still buggy
     	if(layer == GoalKeeperLayer.class){
     		layerStack.add(GoalKeeperLayer.class);
     		//Doing nothing at the moment 
     		// TODO Need a toast for the User to notify him if really want to quit the game
+    		CCDirector.sharedDirector().getActivity().finish();
     	}else if(layer == ShooterLayer.class){
     		layerStack.add(ShooterLayer.class);
+    		CCDirector.sharedDirector().getActivity().finish();
     		//Doing nothing at the moment 
     		// TODO Need a toast for the User to notify him if really want to quit the game
     	}else{
@@ -183,6 +186,8 @@ public class FootFingerActivity extends Activity {
     		CCDirector.sharedDirector().replaceScene(GoalKeeperLayer.scene());
     	}else if(newLayer == ShooterLayer.class){
     		CCDirector.sharedDirector().replaceScene(ShooterLayer.scene());
+    	}else if(newLayer == HelpScreenLayer.class){
+    		CCDirector.sharedDirector().replaceScene(HelpScreenLayer.scene());
     	}
     }
     

@@ -201,12 +201,12 @@ public class GoalKeeperLayer extends CCColorLayer {
 				if (ay >= 3.0) {
 					// rechts
 //					Log.e("print", "oben rechts");
-					animate(4);
+					animate(6);
 				} else if (ay <= -3.0) {
 					// links
 
 //					Log.e("print", "oben links");
-					animate(6);
+					animate(4);
 				}
 			}
 		}
@@ -361,12 +361,12 @@ public class GoalKeeperLayer extends CCColorLayer {
 					if (ay >= 3.0) {
 						// rechts
 						Log.e("print", "oben rechts");
-						return 6;
+						return 4;
 					} else if (ay <= -3.0) {
 						// links
 
 						Log.e("print", "oben links");
-						return 4;
+						return 6;
 					}
 				}
 			}

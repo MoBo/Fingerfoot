@@ -125,7 +125,7 @@ public class ShooterLayer extends CCColorLayer {
 		
 //			SoundManager.stopSound(R.raw.frisbe_slow);
 //			
-//			SoundManager.playSound(R.raw.frisbe_fast,1f,-1);
+			//SoundManager.playSound(R.raw.frisbe_fast,1f,-1);
 			
 			this.timeStamp = System.currentTimeMillis();
 			this.lastUpperPoint = winSize.getHeight() - event.getRawY();
@@ -188,6 +188,7 @@ public class ShooterLayer extends CCColorLayer {
 				// config);
 
 			}
+			//SoundManager.stopSound(R.raw.frisbe_fast);
 			dragAndDrop = false;
 		}
 		return super.ccTouchesEnded(event);
@@ -379,8 +380,12 @@ public class ShooterLayer extends CCColorLayer {
 				public void run() {
 					try {
 						Thread.sleep(500);
-						networkClient.transmitAndGetResponse(lastHitBox + "");
-
+						String result =  networkClient.transmitAndGetResponse(lastHitBox + "");
+						if("0".equals(result)){
+							FootFingerActivity.makeToast("You win!");
+						}else if("1".equals(result)){
+							FootFingerActivity.makeToast("You've lost!");
+						}
 						resetFrisbee();
 					} catch (IOException e) {
 						// do nothing

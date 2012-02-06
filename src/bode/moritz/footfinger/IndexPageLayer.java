@@ -42,7 +42,7 @@ public class IndexPageLayer extends CCColorLayer {
 	}
 	
 	public void helpClick(Object sender){
-		CCDirector.sharedDirector().replaceScene(HelpPageLayer.scene());
+		FootFingerActivity.setNextView(this.getClass(),HelpScreenLayer.class);
 	}
 
 	public static CCScene scene()
