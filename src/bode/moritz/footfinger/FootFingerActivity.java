@@ -121,6 +121,12 @@ public class FootFingerActivity extends Activity {
 		SoundManager.cleanup();
 		CCDirector.sharedDirector().end();
 	}
+	
+	@Override
+	protected void onDestroy() {
+		currentScene =null;
+		super.onDestroy();
+	}
 
 	public static void setNextView(Class<?> thisLayer, Class<?> nextLayer) {
 		layerStack.add(thisLayer);

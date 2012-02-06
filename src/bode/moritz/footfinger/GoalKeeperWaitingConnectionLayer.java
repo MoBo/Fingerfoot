@@ -22,6 +22,8 @@ import bode.moritz.footfinger.sound.SoundManager;
 public class GoalKeeperWaitingConnectionLayer extends CCColorLayer {
 
 	private CGSize winSize;
+	protected ServerSocket server;
+	protected Socket client;
 
 	protected GoalKeeperWaitingConnectionLayer() {
 		super(ccColor4B.ccc4(255, 255, 255, 255));
@@ -69,13 +71,10 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer {
 
 		new Thread(new Runnable() {
 
-			private ServerSocket server;
-
 			@Override
 			public void run() {
 				try {
 					server = new ServerSocket(8080);
-					Socket client;
 					client = server.accept();
 					// Client connected
 					FootFingerActivity.setClient(client);
@@ -91,6 +90,16 @@ public class GoalKeeperWaitingConnectionLayer extends CCColorLayer {
 	}
 
 	public void prevClick(Object sender) {
+		try {
+			if (server != null) {
+				server.close();
+			}
+			if (client != null) {
+				client.close();
+			}
+		} catch (IOException e) {
+
+		}
 		FootFingerActivity.gotoPreviousView();
 	}
 
