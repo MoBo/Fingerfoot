@@ -19,15 +19,11 @@ public final class R {
     }
     public static final class raw {
         public static final int background_music=0x7f040000;
-        public static final int claps=0x7f040001;
-        public static final int frisbe_fast=0x7f040002;
-        public static final int frisbe_fast_old=0x7f040003;
-        public static final int frisbe_slow=0x7f040004;
-        public static final int frisbe_slow_old=0x7f040005;
-        public static final int missed=0x7f040006;
-        public static final int success=0x7f040007;
-        public static final int success_old=0x7f040008;
-        public static final int swirl=0x7f040009;
+        public static final int frisbe_fast=0x7f040001;
+        public static final int frisbe_slow=0x7f040002;
+        public static final int missed=0x7f040003;
+        public static final int success=0x7f040004;
+        public static final int swirl=0x7f040005;
     }
     public static final class string {
         public static final int app_name=0x7f050001;

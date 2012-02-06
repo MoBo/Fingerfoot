@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 import org.cocos2d.layers.CCColorLayer;
-import org.cocos2d.layers.CCLayer;
-import org.cocos2d.layers.CCScene;
 import org.cocos2d.menus.CCMenu;
 import org.cocos2d.menus.CCMenuItem;
 import org.cocos2d.menus.CCMenuItemImage;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCLabel;
 import org.cocos2d.nodes.CCSprite;
-import org.cocos2d.sound.SoundEngine;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGSize;
 import org.cocos2d.types.ccColor3B;
@@ -22,7 +19,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
-import android.view.inputmethod.InputMethodManager;
+import bode.moritz.footfinger.R;
 import bode.moritz.footfinger.network.NetworkControllerClient;
 import bode.moritz.footfinger.sound.SoundManager;
 
@@ -30,7 +27,6 @@ public class ShooterConnectLayer extends CCColorLayer {
 
 	private String IP_TO_CONNECT_TO = null;
 	private final int PORT_TO_CONNECT_TO = 8080;
-	private NetworkControllerClient networClient;
 	private CGSize winSize;
 	private final String DEFAULT_TEXT = "Enter IP";
 	private StringBuilder input = new StringBuilder(DEFAULT_TEXT);
@@ -38,14 +34,13 @@ public class ShooterConnectLayer extends CCColorLayer {
 	private OnKeyListener keyListener = new OnKeyListener() {
 
 		boolean firstInput = true;
-		
 
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 			if (event.getAction() == KeyEvent.ACTION_DOWN) {
 				if (keyCode >= KeyEvent.KEYCODE_0
 						&& keyCode <= KeyEvent.KEYCODE_9) {
-					
+
 					if (firstInput) {
 						input = new StringBuilder();
 						firstInput = false;
@@ -90,11 +85,11 @@ public class ShooterConnectLayer extends CCColorLayer {
 					this.makeStringOutOfInput(toAdd);
 					information.setString(input);
 					return true;
-				}else if(keyCode == KeyEvent.KEYCODE_PERIOD){
+				} else if (keyCode == KeyEvent.KEYCODE_PERIOD) {
 					this.addDot();
-				}else if(keyCode == KeyEvent.KEYCODE_DEL){
+				} else if (keyCode == KeyEvent.KEYCODE_DEL) {
 					this.deleteInput();
-				}else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+				} else if (keyCode == KeyEvent.KEYCODE_ENTER) {
 					IP_TO_CONNECT_TO = input.toString();
 					FootFingerActivity.hideSoftInput();
 					connectToServer();
@@ -105,20 +100,17 @@ public class ShooterConnectLayer extends CCColorLayer {
 		}
 
 		private void addDot() {
-			if(input.length()<15){
+			if (input.length() < 15) {
 				input.append('.');
 				information.setString(input);
 			}
 		}
 
 		private void deleteInput() {
-			if(input.length()>0&&!firstInput){
-				input.setLength(input.length()-1);
-//				if(input.length()==4||input.length()==8||input.length()==12){
-//					input.setLength(input.length()-1);
-//				}
+			if (input.length() > 0 && !firstInput) {
+				input.setLength(input.length() - 1);
 				input.trimToSize();
-				if(input.length()==0){
+				if (input.length() == 0) {
 					input.append(DEFAULT_TEXT);
 					firstInput = true;
 				}
@@ -127,21 +119,16 @@ public class ShooterConnectLayer extends CCColorLayer {
 		}
 
 		private void makeStringOutOfInput(String toAdd) {
-			if(input.length()<15){
-//				if(input.length()==3||input.length()==7||input.length()==11){
-//					input.append('.');
-//				}
+			if (input.length() < 15) {
 				input.append(toAdd);
-				
 			}
 		}
 	};
 
 	private CCLabel information;
-	private InputMethodManager inputMethodManager;
 
-	protected ShooterConnectLayer(ccColor4B color) {
-		super(color);
+	protected ShooterConnectLayer() {
+		super(ccColor4B.ccc4(255, 255, 255, 255));
 
 		this.setIsTouchEnabled(true);
 		float winScaleWidthFactor = (float) (CCDirector.sharedDirector()
@@ -163,7 +150,7 @@ public class ShooterConnectLayer extends CCColorLayer {
 		information = CCLabel
 				.makeLabel(this.input.toString(), "DroidSans", 30f);
 		information.setPosition(CGPoint.ccp(winSize.getWidth() / 2f - 20f,
-				winSize.getHeight() / 2f ));
+				winSize.getHeight() / 2f));
 		information.setColor(ccColor3B.ccBLACK);
 
 		CCMenuItem shooterItem = CCMenuItemImage.item("enterip/shooter.png",
@@ -177,7 +164,6 @@ public class ShooterConnectLayer extends CCColorLayer {
 		backItem.setPosition(0f, -300f);
 
 		CCMenu menu = CCMenu.menu(shooterItem, backItem);
-		// menu.alignItemsVertically(300f);
 
 		addChild(menu);
 		addChild(information);
@@ -186,10 +172,10 @@ public class ShooterConnectLayer extends CCColorLayer {
 	public void enterIP(Object sender) {
 		FootFingerActivity.showSoftInput(keyListener);
 	}
-	
-	private void connectToServer(){
+
+	private void connectToServer() {
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
@@ -199,31 +185,20 @@ public class ShooterConnectLayer extends CCColorLayer {
 					networClient.connectSocket(IP_TO_CONNECT_TO,
 							PORT_TO_CONNECT_TO);
 					SoundManager.stopSound(R.raw.background_music);
-					FootFingerActivity.setNextView(getClass(), ShooterLayer.class);
+					FootFingerActivity.setNextView(ShooterConnectLayer.class,
+							ShooterLayer.class);
 				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					// do nothing
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					// do nothing
 				}
 			}
 		}).start();
-		
+
 	}
 
 	public void prevClick(Object sender) {
 		FootFingerActivity.gotoPreviousView();
-	}
-
-	public static CCScene scene() {
-		CCScene scene = CCScene.node();
-		CCLayer layer = new ShooterConnectLayer(ccColor4B.ccc4(255, 255, 255,
-				255));
-
-		scene.addChild(layer);
-
-		return scene;
 	}
 
 }
