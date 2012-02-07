@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, FootFingerActivity!</string>
-    <string name="app_name">FootFinger</string>
-
+    <string name="app_name">Frisboros</string>
 </resources>
